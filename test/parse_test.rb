@@ -210,7 +210,7 @@ class ParseTest < Test::Unit::TestCase
       nil,
       PARENTHESIS_RIGHT(")"),
       "call"
-    )    
+    )
 
     assert_parses expected, "a.()"
   end
@@ -224,7 +224,7 @@ class ParseTest < Test::Unit::TestCase
       ArgumentsNode([expression("1"), expression("2"), expression("3")]),
       PARENTHESIS_RIGHT(")"),
       "call"
-    )    
+    )
 
     assert_parses expected, "a.(1, 2, 3)"
   end
@@ -1157,6 +1157,19 @@ class ParseTest < Test::Unit::TestCase
     )
 
     assert_parses expected, "a if b if c"
+  end
+
+  test "for loops" do
+    expected = ForNode(
+      KEYWORD_FOR("for"),
+      expression("i"),
+      KEYWORD_IN("in"),
+      expression("1..10"),
+      Statements([expression("i")]),
+      KEYWORD_END("end"),
+    )
+
+    assert_parses expected, "for i in a\nend"
   end
 
   private
