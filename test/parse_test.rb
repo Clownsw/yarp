@@ -1163,6 +1163,7 @@ class ParseTest < Test::Unit::TestCase
     expected = BeginNode(
       KEYWORD_BEGIN("begin"),
       Statements([expression("a")]),
+      nil,
       KEYWORD_END("end"),
     )
 
@@ -1170,6 +1171,24 @@ class ParseTest < Test::Unit::TestCase
     assert_parses expected, "begin; a; end"
     assert_parses expected, "begin a\n end"
     assert_parses expected, "begin a; end"
+  end
+
+   test "ensure statements" do
+    expected = BeginNode(
+      KEYWORD_BEGIN("begin"),
+      Statements([expression("a")]),
+      EnsureNode(
+        KEYWORD_ENSURE("ensure"),
+        Statements([expression("b")]),
+        KEYWORD_END("end"),
+      ),
+      nil,
+    )
+
+    assert_parses expected, "begin\na\nensure\nb\nend"
+    assert_parses expected, "begin; a; ensure; b; end"
+    assert_parses expected, "begin a\n ensure b\n end"
+    assert_parses expected, "begin a; ensure b; end"
   end
 
   private
