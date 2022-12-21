@@ -1159,7 +1159,7 @@ class ParseTest < Test::Unit::TestCase
     assert_parses expected, "a if b if c"
   end
 
-  test "for loops" do
+  test "for loop" do
     expected = ForNode(
       KEYWORD_FOR("for"),
       expression("i"),
@@ -1172,6 +1172,62 @@ class ParseTest < Test::Unit::TestCase
 
     assert_parses expected, "for i in 1..10\ni\nend"
   end
+
+  test "for loop with do keyword" do
+    expected = ForNode(
+      KEYWORD_FOR("for"),
+      expression("i"),
+      KEYWORD_IN("in"),
+      expression("1..10"),
+      KEYWORD_DO("do"),
+      Statements([expression("i")]),
+      KEYWORD_END("end"),
+    )
+
+    assert_parses expected, "for i in 1..10 do\ni\nend"
+  end
+
+  test "for loop no newlines" do
+    expected = ForNode(
+      KEYWORD_FOR("for"),
+      expression("i"),
+      KEYWORD_IN("in"),
+      expression("1..10"),
+      nil,
+      Statements([expression("i")]),
+      KEYWORD_END("end"),
+    )
+
+    assert_parses expected, "for i in 1..10 i end"
+  end
+
+  test "for loop with semicolons" do
+    expected = ForNode(
+      KEYWORD_FOR("for"),
+      expression("i"),
+      KEYWORD_IN("in"),
+      expression("1..10"),
+      nil,
+      Statements([expression("i")]),
+      KEYWORD_END("end"),
+    )
+
+    assert_parses expected, "for i in 1..10; i; end"
+  end
+
+  # test "for loops" do
+  #   expected = ForNode(
+  #     KEYWORD_FOR("for"),
+  #     expression("i"),
+  #     KEYWORD_IN("in"),
+  #     expression("1..10"),
+  #     nil,
+  #     Statements([expression("i")]),
+  #     KEYWORD_END("end"),
+  #   )
+
+  #   assert_parses expected, "for i,j in 1..10\ni\nend"
+  # end
 
   private
 
